@@ -1,9 +1,11 @@
 import './App.css';
-import BrowserRouter from 'react-router-dom/BrowserRouter';
-import Route from 'react-router-dom/Router';
-import Routes from 'react-router-dom/Routes';
-import Outlet from 'react-router-dom/Outlet';
-import Navigate from 'react-router-dom/Navigate';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from 'react-router-dom';
 import { Planet, Profile, Register, Signin, Splash, Error } from './page';
 import React from 'react';
 
