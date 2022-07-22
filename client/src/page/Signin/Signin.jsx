@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
-import Styled from './Signin.style';
+import React, { useCallback, useMemo, useRef } from 'react';
+import Styled from './Signin.styled';
 import { useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
 import { ReactComponent as Rocket } from '../../asset/shuttle.svg';
@@ -11,6 +11,7 @@ const Signin = () => {
   const [id, setId] = React.useState('');
   const [pw, setPw] = React.useState('');
   const [state, setState] = React.useState('default');
+  const pwRef = useRef(null);
   const navi = useNavigate();
 
   const handleState = (state) => {
@@ -51,6 +52,7 @@ const Signin = () => {
               <b>{id}</b> 행성으로 출발하기
             </span>
             <TextField
+              ref={pwRef}
               id="standard-basic"
               label="비밀번호를 입력하세요"
               value={pw}
@@ -90,11 +92,12 @@ const Signin = () => {
         }
 
         handleState('setpw');
+        handleSignIn(id, pw);
         break;
 
       case 'setpw':
-        handleSignIn(id, pw);
         break;
+
       default:
         break;
     }
@@ -103,6 +106,12 @@ const Signin = () => {
   React.useEffect(() => {
     if (isSignedIn) navi('/planet');
   }, [isSignedIn, navi]);
+
+  React.useEffect(() => {
+    if (pwRef && pwRef.current) {
+      pwRef.current.focus();
+    }
+  }, [pwRef]);
 
   return (
     <Styled.SigninContainer>
