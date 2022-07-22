@@ -1,12 +1,22 @@
 import { useState } from 'react';
+import { UserService } from '../network/userService';
 
 export function useSign() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isSignedOut] = useState(true);
 
+  const handleSignUp = async (id, pw) => {
+    try {
+      setIsSignedIn(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSignIn = async (id, pw) => {
     try {
-      // await signIn();
+      // const response = await UserService.getUser(id, pw);
+      // console.log(response);
       setIsSignedIn(true);
     } catch (error) {
       console.log(error);
@@ -33,6 +43,7 @@ export function useSign() {
   return {
     isSignedIn,
     isSignedOut,
+    handleSignUp,
     handleSignIn,
     handleSignOut,
     handleDeleteUser,
