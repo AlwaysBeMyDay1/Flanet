@@ -1,24 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
+import BrowserRouter from 'react-router-dom/BrowserRouter';
+import Route from 'react-router-dom/Router';
+import Routes from 'react-router-dom/Routes';
+import Outlet from 'react-router-dom/Outlet';
+import Navigate from 'react-router-dom/Navigate';
+import { Planet, Profile, Register, Signin, Splash, Error } from './page';
+import React from 'react';
+
+const ProtectedRoute = () => {
+  // const { state } = React.useContext(UserContext);
+  // if (!state.users) {
+  //   return <Navigate to={'/'} replace />;
+  // }
+  return <Outlet />;
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Splash />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/planet" element={<Planet />} />
+        </Route>
+        <Route path="/404" element={<Error />} />
+        <Route path="*" element={<Navigate to="/404" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
