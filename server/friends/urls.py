@@ -5,8 +5,6 @@ from . import views
 app_name = "friends"
 
 router = DefaultRouter()
-router.register(r'post',views.FriendsViewSet)
+router.register('',views.FriendsViewSet)
 
-urlpatterns = [
-    path('',include(router.urls)),
-]
+urlpatterns = router.urls
