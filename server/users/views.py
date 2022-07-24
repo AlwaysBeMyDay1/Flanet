@@ -1,29 +1,33 @@
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework import status
-
-from rest_framework.decorators import action
+from django.conf import settings
 from django.contrib.auth import authenticate
 import jwt
-from django.conf import settings
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
+from friends.models import Friends
 from .models import User
+from .permissions import IsUser
 from .serializers import UserSerializer
+
 
 class UsersViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
-    
     
     def get_permissions(self):
-        permission_classes = [AllowAny]
+        if self.action == 'list':
+            permission_classes = [IsAdminUser]
+        elif self.action == 'create' or self.action == 'retrieve':
+            permission_classes = [AllowAny]
+        else :
+            permission_classes = [IsUser]
         return [permission() for permission in permission_classes]
 
     @action(methods=['post'], detail=False)
     def login(self, request):
-        print("✅✅✅✅✅✅✅")
         username = request.data.get('username')
         password = request.data.get('password')
         if not username or not password:
