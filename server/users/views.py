@@ -38,3 +38,42 @@ class UsersViewSet(ModelViewSet):
             return Response(data={"token":encoded_jwt, "id":user.pk})
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
+    def get_friends_list(self, friend_element, new_friends_list):
+        friends = Friends.objects.filter(user_one=friend_element['id'])
+        for friend in friends:
+            queryset = self.get_queryset().filter(pk=friend.user_two.pk)
+            serializer = self.get_serializer(queryset, many=True)
+            if serializer.data[0] not in new_friends_list:
+                new_friends_list.append(serializer.data[0])
+        return new_friends_list
+
+    @action(detail=True)
+    def friends(self, request, pk):
+        user = request.user
+        if user.is_authenticated:
+            
+            # get list of my friends
+            my_friends_one_list = []
+            friends = Friends.objects.filter(user_one=user.pk)
+            for friend in friends:
+                queryset = self.get_queryset().filter(pk=friend.user_two.pk)
+                serializer = self.get_serializer(queryset, many=True)
+                my_friends_one_list.append(serializer.data[0])
+
+            # get list of my friends' friends
+            my_friends_two_list = []
+            for friend_one in my_friends_one_list:
+                self.get_friends_list(friend_one, my_friends_two_list)
+
+            # get list of my friends' friends' friends
+            my_friends_three_list = []
+            for friend_two in my_friends_two_list:
+                self.get_friends_list(friend_two, my_friends_three_list)
+
+            data = {
+                "one" : my_friends_one_list,
+                "two" : my_friends_two_list,
+                "three" : my_friends_three_list
+            }
+            return Response(data)
